@@ -307,22 +307,23 @@ section[id] { scroll-margin-top: var(--header-h); }
   .hero__actions{ animation: rise .8s var(--ease-out) .28s both; }
   .sheet        { animation: sheet-in 1s var(--ease-out) .25s both; }
 
-  /* la fórmula se escribe */
+  /* La hoja se repite en un ciclo de 10s: se escribe la fórmula, se
+     resuelven las filas, queda quieta ~2,5s, se deshace y vuelve a empezar. */
   .sheet__expr {
     animation:
-      type .9s steps(19, end) .9s both,
-      caret .7s steps(1) .9s 4;
+      type 10s steps(19, end) .9s infinite both,
+      caret .7s steps(1) .9s infinite;
   }
 
   /* cada fila: se tacha el "antes" y se llena el "ahora" */
-  .cell--before s { animation: strike .45s var(--ease) both; animation-delay: calc(1.9s + var(--i) * .5s); }
-  .cell--now      { animation: fill-cell .7s var(--ease-out) both; animation-delay: calc(2.05s + var(--i) * .5s); }
-  .cell--now .ico { animation: pop .5s var(--ease-out) both; animation-delay: calc(2.25s + var(--i) * .5s); }
+  .cell--before s { animation: strike 10s var(--ease) infinite both; animation-delay: calc(1.9s + var(--i) * .5s); }
+  .cell--now      { animation: fill-cell 10s var(--ease-out) infinite both; animation-delay: calc(2.05s + var(--i) * .5s); }
+  .cell--now .ico { animation: pop 10s var(--ease-out) infinite both; animation-delay: calc(2.25s + var(--i) * .5s); }
 
   /* barra de estado y contador */
-  .sheet__progress i { animation: grow 2s linear 2.05s both; }
-  .sheet__count      { animation: count 2s linear 2.05s both; }
-  .sheet__ready      { animation: ready-blink .5s steps(1) 4.05s 3; }
+  .sheet__progress i { animation: grow 10s linear 2.05s infinite both; }
+  .sheet__count      { animation: count 10s linear 2.05s infinite both; }
+  .sheet__ready      { animation: ready-blink 10s steps(1) 4.05s infinite; }
 }
 
 @keyframes rise {
@@ -338,39 +339,40 @@ section[id] { scroll-margin-top: var(--header-h); }
   60%  { box-shadow: 0 0 0 var(--pine); }
   to   { opacity: 1; transform: none; box-shadow: var(--shadow-hard); }
 }
+/* Los porcentajes de estos keyframes están calculados sobre el ciclo de 10s */
 @keyframes type {
-  from { clip-path: inset(0 100% 0 0); }
-  to   { clip-path: inset(0 0 0 0); }
+  0%, 97.5%, 100% { clip-path: inset(0 100% 0 0); }
+  9%, 93%         { clip-path: inset(0 0 0 0); }
 }
 @keyframes caret {
   0%  { box-shadow: inset -2px 0 0 var(--wa-deep); }
   50% { box-shadow: none; }
 }
 @keyframes strike {
-  from { text-decoration-color: transparent; color: var(--ink); }
-  to   { text-decoration-color: var(--ink-soft); color: var(--ink-soft); }
+  0%, 64%, 100% { text-decoration-color: transparent; color: var(--ink); }
+  4.5%, 60%     { text-decoration-color: var(--ink-soft); color: var(--ink-soft); }
 }
 @keyframes fill-cell {
-  0%   { opacity: 0; background: var(--white); box-shadow: inset 0 0 0 2px transparent; }
-  35%  { opacity: 1; background: var(--white); box-shadow: inset 0 0 0 2px var(--wa-deep); }
-  100% { opacity: 1; background: var(--wa-tint); box-shadow: inset 0 0 0 2px transparent; }
+  0%, 64%, 100% { opacity: 0; background: var(--white); box-shadow: inset 0 0 0 2px transparent; }
+  2.45%         { opacity: 1; background: var(--white); box-shadow: inset 0 0 0 2px var(--wa-deep); }
+  7%, 60%       { opacity: 1; background: var(--wa-tint); box-shadow: inset 0 0 0 2px transparent; }
 }
 @keyframes pop {
-  0%   { transform: scale(0); }
-  70%  { transform: scale(1.35); }
-  100% { transform: scale(1); }
+  0%, 64%, 100% { transform: scale(0); }
+  3.5%          { transform: scale(1.35); }
+  5%, 60%       { transform: scale(1); }
 }
 @keyframes grow {
-  from { transform: scaleX(0); }
-  to   { transform: scaleX(1); }
+  0%, 79.5%, 100% { transform: scaleX(0); }
+  20%, 58.5%      { transform: scaleX(1); }
 }
 @keyframes count {
-  from { --done: 0; }
-  to   { --done: 4; }
+  0%, 79.5%, 100% { --done: 0; }
+  20%, 58.5%      { --done: 4; }
 }
 @keyframes ready-blink {
-  0%  { color: var(--wa-deep); }
-  50% { color: var(--pine); }
+  0%, 5%, 10%          { color: var(--wa-deep); }
+  2.5%, 7.5%, 12.5%, 15% { color: var(--pine); }
 }
 
 /* ==========================================================
